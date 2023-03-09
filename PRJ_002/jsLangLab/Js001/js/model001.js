@@ -3,7 +3,7 @@
 var person = new Object();
 person.firstName = "John";
 person.lastName = "Doe";
-person.age = 50;
+person.age = 55;
 person.eyeColor = "blue";
 //Definición de funciones
 person.fullName = 	function() {return this.firstName + " " + this.lastName;}
