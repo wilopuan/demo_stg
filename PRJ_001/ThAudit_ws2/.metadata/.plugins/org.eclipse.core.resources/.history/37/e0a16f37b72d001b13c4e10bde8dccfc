@@ -1,0 +1,18 @@
+package co.com.rm;
+
+import java.util.Vector;
+
+/*
+ * Manejador de reprocesos de reverso
+ * 
+ */
+public class RevertManager {
+	
+	/**
+	 * Coleccion de registros a reversar
+	 */
+	
+	private static Vector<DataRevertManager> collect = new Vector<DataRevertManager>(200); 
+	
+
+}

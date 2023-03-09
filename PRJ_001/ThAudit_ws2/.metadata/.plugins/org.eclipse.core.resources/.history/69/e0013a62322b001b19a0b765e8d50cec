@@ -1,0 +1,72 @@
+package co.com.wlf;
+
+public class Tester {
+
+	private static class Workflow implements Runnable {
+		private String name;
+		private static int effort = 20;
+	
+		public void setName(String loName){
+			this.name=loName;
+		}
+		@Override
+		public void run() {
+	        System.out.println("Entra generador "+this.name);
+			AuditType auditType = null;
+
+			for (int i = 1; i < 50; i++) {
+	        	try {
+					Thread.sleep((new Double(Math.random()*effort + 1).longValue()));
+				} catch (InterruptedException e) {
+				}			
+
+				auditType = new AuditType();
+				auditType.setCampo1(this.name);
+				auditType.setCampo2("ooo");
+				auditType.setCampo3(i);
+				TraceManager.doTraceWork(auditType);
+			}
+			
+		}
+
+	}	
+	
+	
+	
+	public static void main(String[] args) {
+	
+		Workflow workflow1 = new Workflow();
+		workflow1.setName("workflow1");
+		Thread threadTrace = new Thread(workflow1);
+		threadTrace.start();
+		
+		Workflow workflow2 = new Workflow();
+		workflow2.setName("workflow2");
+		threadTrace = new Thread(workflow2);
+		threadTrace.start();
+	
+		Workflow workflow3 = new Workflow();
+		workflow3.setName("workflow3");
+		threadTrace = new Thread(workflow3);
+		threadTrace.start();
+		
+		Workflow workflow4 = new Workflow();
+		workflow4.setName("workflow3");
+		threadTrace = new Thread(workflow4);
+		threadTrace.start();		
+
+		Workflow workflow5 = new Workflow();
+		workflow5.setName("workflow5");
+		threadTrace = new Thread(workflow5);
+		threadTrace.start();		
+
+		Workflow workflow6 = new Workflow();
+		workflow6.setName("workflow6");
+		threadTrace = new Thread(workflow6);
+		threadTrace.start();		
+		
+		
+		
+	}
+
+}

@@ -1,0 +1,53 @@
+package co.com.rm;
+
+import java.util.Stack;
+
+/**
+ * Manejador del proceso inicial de reverso. Tiene como objetivos hacer el
+ * primer intento de reverso de no resolverse lo programará para el proceso de
+ * reintentos programados Puede recibir peticiones de inicio concurrentes.
+ * 
+ * @author wilop
+ *
+ */
+public class InitialRevert {
+
+	static private Stack<DataRevertManager> petitStack = null;
+
+	/**
+	 * Hilo Obrero para la operación de ejecucion del reverrso
+	 */
+	private static RevertWork runnaWorker = null;
+
+	/**
+	 * Hilo Monitor para la administración del Hilo runnaWorker (Hilos obreros)
+	 */
+	private static Thread threadMonitor = null;
+
+	/**
+	 * Constructor de la Clase
+	 */
+
+	static {
+		//threadMonitor = new Thread(runnaWorker);
+	}
+
+	/**
+	 * Realiza el encolamiento del reverso inicial
+	 * 
+	 * @param auditRecord
+	 */
+	public static void doInitialRevert(DataRevertManager auditRecord) {
+
+		petitStack.push(auditRecord);
+
+		/**
+		 * Asigna Hilo Obrero al Monitor-thread, si no hay hilos Obrero trabajando
+		 */
+		if (!threadMonitor.isAlive()) {
+			threadMonitor = new Thread(runnaWorker);
+			threadMonitor.start();
+		}
+
+	}
+}

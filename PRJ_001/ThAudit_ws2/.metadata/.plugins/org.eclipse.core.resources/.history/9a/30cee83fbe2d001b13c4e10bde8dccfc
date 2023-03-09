@@ -1,0 +1,125 @@
+package co.com.rm;
+
+import java.util.Stack;
+import java.util.Vector;
+
+import co.com.wlf.AuditType;
+import co.com.wlf.TraceManager.TraceWorker;
+
+/*
+ * Manejador de reprocesos de reverso
+ * 
+ */
+public class RevertManager {
+
+	private final static int COLLECT_DIMENSION = 200;
+
+	/**
+	 * Coleccion de registros a reversar
+	 */
+	private static Vector<DataRevertManager> retryCollect = new Vector<DataRevertManager>(COLLECT_DIMENSION);
+
+	/**
+	 * Coleccion de registros a Notificar reverso manual
+	 */
+	private static Stack<DataRevertManager> notifyCollect = new Stack<DataRevertManager>();
+
+	/**
+	 * Encargado de recorrer la colección y procesar el reintento
+	 */
+	private static class RetryWorker implements Runnable {
+
+		@Override
+		public void run() {
+
+			int sizeCollect = retryCollect.size();
+
+			if (sizeCollect == 0) {
+				return;
+			}
+
+			for (int indexElement = 0; indexElement <= sizeCollect - 1; indexElement++) {
+				if (retryCollect.elementAt(indexElement).getProgramRetry() > 0) {
+					retryCollect.elementAt(indexElement).programRetryDecrease();
+					if (TargetWork.doRevert(retryCollect.elementAt(indexElement).getTrazabilityCode())) {
+						synchronized (retryCollect) {
+							retryCollect.remove(indexElement);
+						}
+					}
+				} else {
+					synchronized (retryCollect) {
+						retryCollect.remove(indexElement);
+						// Envíela al store de notificación
+					}
+				}
+				sizeCollect = retryCollect.size();
+			}
+
+		}
+
+	}
+
+	private static class NotifyWorker implements Runnable {
+
+		@Override
+		public void run() {
+
+			// Crear un iterador sobre el coolect
+			// Sincronizarlo al borrarlo
+
+			// Se dispara la notificación, independiente del resultado. Solamente una vez
+
+			// Una notificación, en la regla de negocio debe eliminar el registro del store
+			// de la info. Efectiva o no
+
+		}
+
+	}
+	
+	
+	/**
+	 * Hilo para el manejo de la colección
+	 */
+	private static RetryWorker runnaWorker = new RetryWorker();
+
+	/**
+	 * ThreadMonitor para la administración del Hilo runnaWorker (Hilos obreros)
+	 */
+	private static Thread threadRevert = null;
+
+	/**
+	 * Constructor de la Clase
+	 */
+
+	static {
+		threadRevert = new Thread(runnaWorker);
+	}
+	
+	
+	/**
+	 * Programa el reverso
+	 * 
+	 * @param DataRevertManager
+	 */
+	public static void doProgram(DataRevertManager record) {
+
+		retryCollect.add(record);
+
+		/**
+		 * Lanza trabajo al Monitor-thread, si no hay hilos trabajando
+		 */
+		if (!threadRevert.isAlive()) {
+			System.out.println(" ->Iniciando Hilo con petición ");
+			threadRevert = new Thread(runnaWorker);
+			threadRevert.start();
+		} else {
+			System.out.println(" ->Adicionando petición a Hilo Trabajando: ");
+		}
+
+	}	
+	
+	
+	
+	
+
+}

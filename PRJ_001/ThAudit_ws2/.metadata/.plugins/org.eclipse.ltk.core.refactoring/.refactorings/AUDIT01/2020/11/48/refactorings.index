@@ -1,0 +1,6 @@
+1606158191503	Rename field 'runnaWorker'
+1606166287011	Delete element
+1606253700249	Rename field 'threadTrace'
+1606256059937	Rename method 'thereIsMoreWork'
+1606321844595	Rename method 'doRevert'
+1606331095456	Rename type 'RevertManager'

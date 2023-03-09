@@ -1,0 +1,103 @@
+package co.com.wlf;
+
+import java.util.EmptyStackException;
+import java.util.Stack;
+
+/**
+ * Permite las operaciones sobre el Memory storage, este artefacto es compartido
+ * por el tenant
+ * 
+ * @author wilson
+ *
+ */
+public class TraceManager {
+
+	/**
+	 * Pila de registros a persistir
+	 */
+	private static Stack<AuditType> traceStack = new Stack<AuditType>();
+
+	/**
+	 * Encargado de recorrer traceStack y darle persistencia
+	 */
+	private static class TraceWorker implements Runnable {
+
+		@Override
+		public void run() {
+			/*
+			 * Descola el traceStack y genera la persistencia. Puede Hacer reintentos cuando
+			 * la persistencia se encuella
+			 */
+			System.out.println("Inicia Vaceado Trabajo:");
+			AuditType auditType = null;
+			//synchronized (traceStack) {
+				while (!traceStack.empty()) {
+					// Este temporizador es necesario para sincronizar uso del traceStack. Su valor
+					// es 1-10.
+					try {
+						Thread.sleep(10);
+						auditType = (AuditType) traceStack.pop();
+						System.out.println("Pop:" + auditType.getCampo1() + ":" + auditType.getCampo3());
+					} catch (InterruptedException e) {
+						System.out.println("InterruptedException:");
+						e.printStackTrace();
+					} catch (EmptyStackException e) {
+						System.out.println("EmptyStackException:");
+						e.printStackTrace();
+					}
+				}
+			//}
+			System.out.println("Finaliza Vaceado trabajo:");
+		}
+
+	}
+
+	/**
+	 * Hilo para la operación de persistencia del traceStack
+	 */
+	private static TraceWorker runnaWorker = new TraceWorker();
+
+	/**
+	 * ThreadMonitor para la administración del Hilo runnaWorker (Hilos obreros)
+	 */
+	private static Thread threadTrace = null;
+
+	/**
+	 * Constructor de la Clase
+	 */
+
+	static {
+		threadTrace = new Thread(runnaWorker);
+	}
+
+	/**
+	 * Realiza el registro de la auditoria
+	 * 
+	 * @param auditType
+	 */
+	public static void doTraceWork(AuditType auditType) {
+
+		/**
+		 * Enpilado
+		 */
+
+		synchronized (traceStack) {
+		traceStack.push(auditType);
+		}
+		// System.out.println("Push:" + auditType.getCampo1() + ":" +
+		// auditType.getCampo3());
+
+		/**
+		 * Lanza trabajo al Monitor-thread, si no hay hilos trabajando
+		 */
+		if (!threadTrace.isAlive()) {
+			System.out.println(" ->Iniciando Hilo ");
+			threadTrace = new Thread(runnaWorker);
+			threadTrace.start();
+		} else {
+			// System.out.println(" ->Sobre Hilo Trabajando: ");
+		}
+
+	}
+
+}

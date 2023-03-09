@@ -1,0 +1,28 @@
+package co.com.rm;
+
+/**
+ * Clase demo, externa que simula un trabajo autónomo runable de reverso
+ * @author wilop
+ *
+ */
+public class RevertWork implements Runnable{
+	
+	/**
+	 * Data demo
+	 */
+	private DataRevertManager datademo;
+	
+	@Override
+	public void run() {
+
+		try {
+			Thread.sleep(500);
+			datademo = InitialRevert.getNextPetition();
+			System.out.println("...En trabajo de Reverso para: "+datademo.getTrazabilityCode());
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}		
+		
+	}
+
+}

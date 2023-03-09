@@ -1,0 +1,142 @@
+package co.com.rm;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Tester {
+
+	/**
+	 * Lanzador de peticiones de reverso
+	 * 
+	 * @author wilop
+	 *
+	 */
+	private static class Workflow implements Runnable {
+		private static int effort = 20;
+
+		private String name;
+
+		public Workflow(String name) {
+			this.name = name;
+		}
+
+		@Override
+		public void run() {
+			// System.out.println("Entra generador "+this.name+":");
+
+			for (Integer i = 1; i < 50; i++) {
+				try {
+					Thread.sleep((new Double(Math.random() * effort + 1).longValue()));
+				} catch (InterruptedException e) {
+					System.out.println("hilo workflow ");
+					e.printStackTrace();
+				}
+				RetryManager.programIt(new DataRevertManager(this.name + i.toString(), 5));
+			}
+
+		}
+
+	}
+
+	public static void main(String[] args) {
+
+		List <String> notificaLista = new ArrayList<String>();
+		
+		Workflow workflow1 = new Workflow("WF1_:");
+		Thread threadTrace = new Thread(workflow1);
+		threadTrace.start();
+
+		Workflow workflow2 = new Workflow("WF2_:");
+		threadTrace = new Thread(workflow2);
+		threadTrace.start();
+
+		try {
+			Thread.sleep(4000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		Workflow workflow3 = new Workflow("WF3_:");
+		threadTrace = new Thread(workflow3);
+		threadTrace.start();
+		
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		Workflow workflow4 = new Workflow("WF4_:");
+		threadTrace = new Thread(workflow4);
+		threadTrace.start();
+		
+
+		while (RetryManager.thereIsMoreWork()) {
+
+			RetryManager.execProgram();
+
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+		if (NotifyManager.thereIsMoreWork()) {
+			notificaLista = NotifyManager.getNotified();
+		}
+		for (String recList: notificaLista ){
+			System.out.println("99-NotificaLista: "+recList);
+		}		
+		
+		RetryManager.resetCollect();
+		
+		Workflow workflow21 = new Workflow("WF21_:");
+		threadTrace = new Thread(workflow21);
+		threadTrace.start();
+
+		try {
+			Thread.sleep(4000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		Workflow workflow31 = new Workflow("WF31_:");
+		threadTrace = new Thread(workflow31);
+		threadTrace.start();
+		
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		Workflow workflow41 = new Workflow("WF41_:");
+		threadTrace = new Thread(workflow41);
+		threadTrace.start();
+		
+
+		while (RetryManager.thereIsMoreWork()) {
+
+			RetryManager.execProgram();
+
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}		
+		
+		
+		if (NotifyManager.thereIsMoreWork()) {
+			notificaLista = NotifyManager.getNotified();
+		}
+		for (String recList: notificaLista ){
+			System.out.println("99-NotificaLista: "+recList);
+		}		
+		
+		
+
+	}
+
+}

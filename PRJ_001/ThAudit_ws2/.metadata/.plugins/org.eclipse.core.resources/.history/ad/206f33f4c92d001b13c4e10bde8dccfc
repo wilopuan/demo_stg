@@ -1,0 +1,108 @@
+package co.com.rm;
+
+import java.util.Vector;
+
+/*
+ * Manejador de reprocesos de reverso
+ * 
+ */
+public class RevertManager {
+
+	private final static int COLLECT_DIMENSION = 200;
+
+	/**
+	 * Coleccion de registros a reversar
+	 */
+	private static Vector<DataRevertManager> retryCollect = new Vector<DataRevertManager>(COLLECT_DIMENSION);
+
+	/**
+	 * Hilo para el manejo de la colección
+	 */
+	private static RetryWorker retryWorker = new RetryWorker();
+
+	/**
+	 * ThreadMonitor para la administración del Hilo runnaWorker (Hilos obreros)
+	 */
+	private static Thread threadRevert = null;
+
+	/**
+	 * Constructor de la Clase
+	 */
+
+	static {
+		threadRevert = new Thread(retryWorker);
+	}
+
+	/**
+	 * Encargado de recorrer la colección y procesar el reintento
+	 */
+	private static class RetryWorker implements Runnable {
+
+		@Override
+		public void run() {
+
+			int sizeCollect = retryCollect.size();
+
+			if (sizeCollect == 0) {
+				System.out.println("Termino el trabajo ...!");
+				return;
+			}
+
+			int indexElement = 0;
+			while (indexElement <= sizeCollect - 1) {
+				if (retryCollect.elementAt(indexElement).getProgramRetry() > 0) {
+					retryCollect.elementAt(indexElement).programRetryDecrease();
+					if (TargetWork.doRevert(retryCollect.elementAt(indexElement).getTrazabilityCode())) {
+						synchronized (retryCollect) {
+							retryCollect.remove(indexElement);
+						}
+						sizeCollect = retryCollect.size();
+					} else {
+						indexElement++;
+					}
+				}
+
+			}
+
+		}
+
+	}
+
+	/**
+	 * Programa el reverso
+	 * 
+	 * @param DataRevertManager
+	 */
+	public static void programIt(DataRevertManager record) {
+		retryCollect.add(record);
+	}
+
+	/**
+	 * Ejecuta Programa de reverso
+	 */
+	public static void execProgram() {
+		/**
+		 * Lanza trabajo al Monitor-thread, si no hay hilos trabajando
+		 */
+		if (!threadRevert.isAlive()) {
+			System.out.println(" ->Iniciando proceso ");
+			threadRevert = new Thread(retryWorker);
+			threadRevert.start();
+		}
+
+	}
+	
+	public static boolean thereIsMoreWork() {
+		if (retryCollect.isEmpty()) {
+			return Boolean.FALSE;
+		}
+		
+		System.out.println("Quedan: ");
+		for (DataRevertManager recPerson : retryCollect) {
+			System.out.println("01-Listing: " + recPerson.getTrazabilityCode()+" : "+recPerson.getProgramRetry());
+		}		
+		
+		
+		return Boolean.TRUE;
+	}
+}

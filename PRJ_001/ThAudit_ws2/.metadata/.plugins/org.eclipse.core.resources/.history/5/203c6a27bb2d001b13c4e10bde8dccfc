@@ -1,0 +1,23 @@
+package co.com.rm;
+
+import java.util.Random;
+
+/**
+ * Clase temporal para la ejecución aleatoria de reversos o notificaciones
+ * 
+ * @author wilop
+ *
+ */
+public class TargetWork {
+
+	private static boolean doRevert(String Keyproc) {
+		Random rd = new Random();
+		return rd.nextBoolean();
+	}
+
+	private static boolean doNotify(String Keyproc) {
+		Random rd = new Random();
+		return rd.nextBoolean();
+	}
+
+}

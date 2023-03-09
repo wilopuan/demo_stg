@@ -1,0 +1,55 @@
+package co.com.rm;
+
+import co.com.wlf.Tester.Workflow;
+
+public class Tester {
+
+	/**
+	 * Lanzador de peticiones de reverso
+	 * @author wilop
+	 *
+	 */
+	private static class Workflow implements Runnable {
+		private static int effort = 20;
+		
+		private String name;
+		
+		public Workflow(String name) {
+			this.name = name;
+		}
+
+
+
+		@Override
+		public void run() {
+	        //System.out.println("Entra generador "+this.name+":");
+
+			for (Integer i = 1; i < 50; i++) {
+	        	try {
+					Thread.sleep((new Double(Math.random()*effort + 1).longValue()));
+				} catch (InterruptedException e) {
+					System.out.println("hilo workflow ");
+					e.printStackTrace();
+				}			
+	        	RevertManager.programIt(new DataRevertManager(this.name+i.toString(),5));
+			}
+			
+		}
+
+	}		
+
+	public static void main(String[] args) {
+		
+		Workflow workflow1 = new Workflow("WF_1");
+		Thread threadTrace = new Thread(workflow1);
+		threadTrace.start();
+	
+		Workflow workflow2 = new Workflow("WF_2");
+		threadTrace = new Thread(workflow2);
+		threadTrace.start();		
+		
+	}
+	
+	
+	
+}

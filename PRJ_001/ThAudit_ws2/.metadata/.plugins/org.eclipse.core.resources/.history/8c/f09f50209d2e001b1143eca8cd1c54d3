@@ -1,0 +1,14 @@
+package co.com.rm;
+
+/**
+ * Manejador del proceso inicial de reverso.
+ * Tiene como objetivos hacer el primer intento de reverso
+ * de no resolverse lo programará para el proceso de reintentos programados
+ * Puede recibir peticiones de inicio concurrentes.
+ * @author wilop
+ *
+ */
+public class InitialRevert {
+
+	
+}

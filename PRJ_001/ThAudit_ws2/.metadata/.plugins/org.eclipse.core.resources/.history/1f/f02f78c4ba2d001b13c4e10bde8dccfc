@@ -1,0 +1,65 @@
+package co.com.rm;
+
+import java.util.Stack;
+import java.util.Vector;
+
+/*
+ * Manejador de reprocesos de reverso
+ * 
+ */
+public class RevertManager {
+	
+	private final static int COLLECT_DIMENSION = 200;
+	
+	/**
+	 * Coleccion de registros a reversar
+	 */
+	private static Vector<DataRevertManager> retryCollect = new Vector<DataRevertManager>(COLLECT_DIMENSION);
+
+	/**
+	 * Coleccion de registros a Notificar reverso manual
+	 */
+	private static Stack<DataRevertManager> notifyCollect = new Stack<DataRevertManager>();
+	
+	
+	/**
+	 * Encargado de recorrer la colección y procesar el reintento
+	 */
+	private static class RetryWorker implements Runnable {
+
+		@Override
+		public void run() {
+			
+			//Crear un iterador sobre el coolect
+			//Sincronizarlo
+			
+			//El proceso de reverso, debe dar de respuesta: Ejecutado, Frustrado
+			//Si es ejecutado se retira del collect
+			
+		}
+
+
+	}
+	
+	private static class NotifyWorker implements Runnable {
+
+		@Override
+		public void run() {
+			
+			//Crear un iterador sobre el coolect
+			//Sincronizarlo al borrarlo
+			
+			//Se dispara la notificación, independiente del resultado. Solamente una vez
+			
+			//Una notificación, en la regla de negocio debe eliminar el registro del store de la info. Efectiva o no
+			
+		}
+
+
+	}
+	
+	
+	
+	
+
+}
