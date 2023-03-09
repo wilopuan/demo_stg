@@ -42,11 +42,11 @@ public class Tester {
 
 		List <String> notificaLista = new ArrayList<String>();
 		
-		Workflow workflow1 = new Workflow("WF1_:");
+		Workflow workflow1 = new Workflow("WF01_:");
 		Thread threadTrace = new Thread(workflow1);
 		threadTrace.start();
 
-		Workflow workflow2 = new Workflow("WF2_:");
+		Workflow workflow2 = new Workflow("WF02_:");
 		threadTrace = new Thread(workflow2);
 		threadTrace.start();
 
@@ -56,7 +56,7 @@ public class Tester {
 			e.printStackTrace();
 		}
 
-		Workflow workflow3 = new Workflow("WF3_:");
+		Workflow workflow3 = new Workflow("WF03_:");
 		threadTrace = new Thread(workflow3);
 		threadTrace.start();
 		
@@ -66,7 +66,7 @@ public class Tester {
 			e.printStackTrace();
 		}
 
-		Workflow workflow4 = new Workflow("WF4_:");
+		Workflow workflow4 = new Workflow("WF04_:");
 		threadTrace = new Thread(workflow4);
 		threadTrace.start();
 		
